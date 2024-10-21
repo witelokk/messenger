@@ -7,13 +7,23 @@ readme = "README.md"
 
 [tool.poetry.dependencies]
 python = "^3.12"
-fastapi = {extras = ["standard"], version = "^0.115.2"}
+fastapi = { extras = ["standard"], version = "^0.115.2" }
 pydantic-settings = "^2.6.0"
 sqlalchemy = "^2.0.36"
 alembic = "^1.13.3"
 psycopg2-binary = "^2.9.10"
 
 
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+pytest-asyncio = "^0.24.0"
+aiosqlite = "^0.20.0"
+greenlet = "^3.1.1"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+
+[tool.pytest.ini_options]
+markers = ["asyncio"]
