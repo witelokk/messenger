@@ -10,6 +10,12 @@ class User(BaseModel):
     id: int | None = None
 
 
+class UserResponse(BaseModel):
+    id: int
+    username: str
+    active: bool
+
+
 class CreateUserRequest(BaseModel):
     username: Annotated[
         str,
@@ -17,7 +23,6 @@ class CreateUserRequest(BaseModel):
             min_length=3,
             max_length=32,
             pattern=r"^[a-zA-Z0-9_\.]+$",
-            strip_whitespace=True,
         ),
     ]
     password: Annotated[str, Field(min_length=8, max_length=64)]

@@ -10,8 +10,10 @@ from messenger.settings import settings
 from messenger.repo.redis_session_repository import RedisSessionRepository
 from messenger.repo.user_repository import UserRepository
 from messenger.repo.session_repository import SessionRepository
-from messenger.service.auth_service import AuthService
+from messenger.service import AuthService, MessageService
 from messenger.repo.sql_alchemy_user_repository import SqlAlchemyUserRepository
+from messenger.repo.message_repository import MessageRepository
+from messenger.repo.sql_alchemy_message_repository import SqlAlchemyMessageRepository
 from messenger.db import SessionLocal
 
 
@@ -50,6 +52,26 @@ async def get_session_repository(redis: redis_dependency):
 session_repository_dependency = Annotated[
     SessionRepository, Depends(get_session_repository)
 ]
+
+
+async def get_message_repository(db: db_dependency):
+    return SqlAlchemyMessageRepository(db)
+
+
+message_repository_dependency = Annotated[
+    MessageRepository, Depends(get_message_repository)
+]
+
+
+async def get_message_service(
+    user_repository: user_repository_dependency,
+    messages_repository: message_repository_dependency,
+    # websocket_manager: websocket_manager_dependency,
+):
+    return MessageService(user_repository, messages_repository)  # , websocket_manager)
+
+
+message_service_dependency = Annotated[MessageService, Depends(get_message_service)]
 
 
 async def get_auth_service(
