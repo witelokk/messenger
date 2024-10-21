@@ -11,6 +11,7 @@ def test_user():
     return User(
         username="testuser",
         password_hash="testhash",
+        active=True,
         telegram_id=12345,
     )
 

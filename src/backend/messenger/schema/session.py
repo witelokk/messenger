@@ -15,7 +15,8 @@ class CreateSessionRequest(BaseModel):
     password: str
 
 
-class SessionSchema(BaseModel):
-    access_token: Annotated[str, Field()]
+class SessionResponse(BaseModel):
+    token: Annotated[str, Field()]
     user_id: int
     username: str
+    expires_at: datetime

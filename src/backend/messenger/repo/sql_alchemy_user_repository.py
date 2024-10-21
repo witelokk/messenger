@@ -14,6 +14,10 @@ class SqlAlchemyUserRepository:
         user_model = (
             await self._db.scalars(select(UserModel).where(UserModel.id == id))
         ).one_or_none()
+
+        if not user_model:
+            return None
+
         return user_model_to_schema(user_model)
 
     async def get_by_username(self, username: str) -> User:
@@ -22,13 +26,17 @@ class SqlAlchemyUserRepository:
                 select(UserModel).where(UserModel.username == username)
             )
         ).one_or_none()
+
+        if not user_model:
+            return None
+
         return user_model_to_schema(user_model)
 
     async def add(self, user: User) -> User:
         user_model = user_schema_to_model(user)
         self._db.add(user_model)
         await self._db.commit()
-        return user_model
+        return user_model_to_schema(user_model)
 
     async def modify(self, id: int, **kwargs) -> User:
         user_model = (
@@ -41,8 +49,9 @@ class SqlAlchemyUserRepository:
         for key, value in kwargs.items():
             setattr(user_model, key, value)
 
+        user = user_model_to_schema(user_model)
         await self._db.commit()
-        return user_model_to_schema(user_model)
+        return user
 
     async def delete(self, id: int) -> User:
         user_model = (

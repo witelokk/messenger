@@ -32,7 +32,7 @@ async def test_add_session(fake_redis, test_session):
 
     await repository.add(test_session)
 
-    session_name = f"{SESSION_PREFIX}{test_session.token}"
+    session_name = f"{SESSION_PREFIX}:{test_session.user_id}:{test_session.token}"
     session_data = await fake_redis.hgetall(session_name)
     assert session_data[SESSION_USER_ID_KEY].decode() == str(test_session.user_id)
     assert float(session_data[SESSION_EXPIRES_KEY]) == test_session.expires.timestamp()
@@ -45,7 +45,7 @@ async def test_add_session(fake_redis, test_session):
 async def test_get_session_exists(fake_redis, test_session):
     repository = RedisSessionRepository(fake_redis)
 
-    session_name = f"{SESSION_PREFIX}{test_session.token}"
+    session_name = f"{SESSION_PREFIX}:{test_session.user_id}:{test_session.token}"
     await fake_redis.hset(session_name, SESSION_USER_ID_KEY, test_session.user_id)
     await fake_redis.hset(
         session_name, SESSION_EXPIRES_KEY, test_session.expires.timestamp()

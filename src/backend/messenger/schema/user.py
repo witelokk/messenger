@@ -5,8 +5,9 @@ from pydantic import BaseModel, Field
 class User(BaseModel):
     username: str
     password_hash: str
-    telegram_id: int = None
-    id: int = None
+    active: bool
+    telegram_id: int | None = None
+    id: int | None = None
 
 
 class CreateUserRequest(BaseModel):

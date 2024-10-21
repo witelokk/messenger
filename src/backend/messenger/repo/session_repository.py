@@ -9,3 +9,6 @@ class SessionRepository(Protocol):
 
     async def get(self, token: str) -> Session:
         pass
+
+    async def delete_all(self, user_id: int) -> None:
+        pass
