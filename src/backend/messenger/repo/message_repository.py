@@ -16,5 +16,5 @@ class MessageRepository(Protocol):
     async def modify(self, id: int, **kwargs) -> Message:
         pass
 
-    async def delete(self, id: int) -> Message:
+    async def delete(self, id: int):
         pass

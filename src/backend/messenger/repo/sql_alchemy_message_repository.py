@@ -52,7 +52,7 @@ class SqlAlchemyMessageRepository:
         await self._db.commit()
         return message_model_to_schema(message_model)
 
-    async def delete(self, id: int) -> Message:
+    async def delete(self, id: int):
         message_model = (
             await self._db.scalars(select(MessageModel).where(MessageModel.id == id))
         ).one_or_none()
@@ -62,4 +62,3 @@ class SqlAlchemyMessageRepository:
 
         await self._db.delete(message_model)
         await self._db.commit()
-        return message_model_to_schema(message_model)

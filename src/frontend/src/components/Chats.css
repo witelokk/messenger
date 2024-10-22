@@ -1,0 +1,43 @@
+/* src/components/Home.css */
+.home {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full height of the viewport */
+  }
+  
+  .chat-container {
+    display: flex;
+    flex: 1; /* Take up remaining space */
+  }
+  
+  .chat-list {
+    width: 30%;
+    border-right: 1px solid #ccc;
+    padding: 10px;
+  }
+  
+  .messages-container {
+    width: 70%;
+    display: flex;
+    flex-direction: column; /* Stack message list and input */
+    padding: 10px;
+    position: relative; /* For absolute positioning of message input */
+  }
+  
+  .message-list {
+    flex: 1; /* Take up remaining space */
+    overflow-y: auto; /* Allow scrolling for message list */
+    margin-bottom: 20px; /* Space for the message input */
+  }
+  
+  .message-input {
+    position: absolute; /* Position at the bottom */
+    bottom: 0; /* Stick to the bottom */
+    left: 0;
+    right: 0;
+    padding: 10px;
+    background: white; /* Background for contrast */
+    border-top: 1px solid #ccc; /* Top border */
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+  }
+  

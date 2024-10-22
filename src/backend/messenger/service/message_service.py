@@ -48,9 +48,9 @@ class MessageService:
         )
         await self._message_repository.add(message)
 
-        if self._websocket_manager.is_connected(to_user.id):
-            await self._websocket_manager.send_message(message)
-        elif to_user.telegram_id:
+        await self._websocket_manager.send_message(message)
+
+        if not self._websocket_manager.is_connected(to_user.id) and to_user.telegram_id:
             user = await self._user_repository.get_by_id(user_id)
             await self._tg_bot.send_message(
                 chat_id=to_user.telegram_id,

@@ -36,6 +36,7 @@ class SqlAlchemyUserRepository:
         user_model = user_schema_to_model(user)
         self._db.add(user_model)
         await self._db.commit()
+        await self._db.refresh(user_model)
         return user_model_to_schema(user_model)
 
     async def modify(self, id: int, **kwargs) -> User:
@@ -53,7 +54,7 @@ class SqlAlchemyUserRepository:
         await self._db.commit()
         return user
 
-    async def delete(self, id: int) -> User:
+    async def delete(self, id: int):
         user_model = (
             await self._db.scalars(select(UserModel).where(UserModel.id == id))
         ).one_or_none()
@@ -63,4 +64,3 @@ class SqlAlchemyUserRepository:
 
         await self._db.delete(user_model)
         await self._db.commit()
-        return user_model_to_schema(user_model)

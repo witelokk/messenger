@@ -16,5 +16,5 @@ class UserRepository(Protocol):
     async def modify(self, id, **kwargs) -> User:
         pass
 
-    async def delete(self, id: int) -> User:
+    async def delete(self, id: int):
         pass
