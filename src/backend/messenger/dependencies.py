@@ -1,5 +1,8 @@
 from typing import Annotated
 
+from aiogram import Bot, Dispatcher
+from aiogram.client.default import DefaultBotProperties
+from aiogram.enums import ParseMode
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -78,12 +81,26 @@ websocket_manager_dependency = Annotated[
 ]
 
 
+async def get_tg_bot():
+    bot = Bot(
+        token=settings.bot_token,
+        default=DefaultBotProperties(parse_mode=ParseMode.HTML),
+    )
+    return bot
+
+
+tg_bot_dependency = Annotated[Bot, Depends(get_tg_bot)]
+
+
 async def get_message_service(
     user_repository: user_repository_dependency,
     messages_repository: message_repository_dependency,
     websocket_manager: websocket_manager_dependency,
+    tg_bot: tg_bot_dependency,
 ):
-    return MessageService(user_repository, messages_repository, websocket_manager)
+    return MessageService(
+        user_repository, messages_repository, websocket_manager, tg_bot
+    )
 
 
 message_service_dependency = Annotated[MessageService, Depends(get_message_service)]
@@ -114,7 +131,6 @@ async def get_chat_service(
 
 
 chat_service_dependency = Annotated[ChatService, Depends(get_chat_service)]
-
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
 
