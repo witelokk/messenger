@@ -10,10 +10,12 @@ from messenger.settings import settings
 from messenger.repo.redis_session_repository import RedisSessionRepository
 from messenger.repo.user_repository import UserRepository
 from messenger.repo.session_repository import SessionRepository
-from messenger.service import AuthService, MessageService
+from messenger.service import AuthService, MessageService, ChatService
 from messenger.repo.sql_alchemy_user_repository import SqlAlchemyUserRepository
 from messenger.repo.message_repository import MessageRepository
 from messenger.repo.sql_alchemy_message_repository import SqlAlchemyMessageRepository
+from messenger.repo.chat_repository import ChatRepository
+from messenger.repo.sql_alchemy_chat_repository import SqlAlchemyChatRepository
 from messenger.db import SessionLocal
 
 
@@ -82,6 +84,23 @@ async def get_auth_service(
 
 
 auth_service_dependency = Annotated[AuthService, Depends(get_auth_service)]
+
+
+async def get_chat_repository(db: db_dependency):
+    return SqlAlchemyChatRepository(db)
+
+
+chat_repository_dependency = Annotated[ChatRepository, Depends(get_chat_repository)]
+
+
+async def get_chat_service(
+    chat_repository: chat_repository_dependency,
+    user_repository: user_repository_dependency,
+):
+    return ChatService(chat_repository, user_repository)
+
+
+chat_service_dependency = Annotated[ChatService, Depends(get_chat_service)]
 
 
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="auth/token")
