@@ -16,6 +16,7 @@ from messenger.repo.message_repository import MessageRepository
 from messenger.repo.sql_alchemy_message_repository import SqlAlchemyMessageRepository
 from messenger.repo.chat_repository import ChatRepository
 from messenger.repo.sql_alchemy_chat_repository import SqlAlchemyChatRepository
+from messenger.websocket_manager import WebSocketManager
 from messenger.db import SessionLocal
 
 
@@ -65,12 +66,24 @@ message_repository_dependency = Annotated[
 ]
 
 
+websocket_manager = WebSocketManager()
+
+
+def get_websocket_manager():
+    return websocket_manager
+
+
+websocket_manager_dependency = Annotated[
+    WebSocketManager, Depends(get_websocket_manager)
+]
+
+
 async def get_message_service(
     user_repository: user_repository_dependency,
     messages_repository: message_repository_dependency,
-    # websocket_manager: websocket_manager_dependency,
+    websocket_manager: websocket_manager_dependency,
 ):
-    return MessageService(user_repository, messages_repository)  # , websocket_manager)
+    return MessageService(user_repository, messages_repository, websocket_manager)
 
 
 message_service_dependency = Annotated[MessageService, Depends(get_message_service)]

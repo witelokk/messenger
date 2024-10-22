@@ -1,5 +1,6 @@
 from datetime import datetime
 
+from messenger.websocket_manager import WebSocketManager
 from messenger.repo.user_repository import UserRepository
 from messenger.repo.message_repository import MessageRepository
 from messenger.schema.message import (
@@ -9,8 +10,6 @@ from messenger.schema.message import (
     MessagesResponse,
     UserResponse,
 )
-
-# from messenger.service.websockets import WebSocketManager
 
 
 class UserDoesNotExistError(Exception):
@@ -23,11 +22,11 @@ class MessageService:
         self,
         user_repository: UserRepository,
         message_repository: MessageRepository,
-        # websocket_manager: WebSocketManager,
+        websocket_manager: WebSocketManager,
     ):
         self._user_repository = user_repository
         self._message_repository = message_repository
-        # self._websocket_manager = websocket_manager
+        self._websocket_manager = websocket_manager
 
     async def create_message(
         self, user_id: int, create_message_request: CreateMessageRequest
@@ -44,7 +43,7 @@ class MessageService:
             created_at=datetime.now(),
         )
         await self._message_repository.add(message)
-        # await self._websocket_manager.send_message(message)
+        await self._websocket_manager.send_message(message)
 
     async def get_messages(
         self,
