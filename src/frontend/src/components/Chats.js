@@ -66,24 +66,40 @@ function Chats({ onLogout, api }) {
       console.log(ws);
     };
 
-    ws.onmessage = (event) => {
+    ws.onmessage = async (event) => {
       console.log(event.data);
       const data = JSON.parse(event.data);
 
       const currentChatId = currentChatIdRef.current;
 
-      if (data.event === 'new_message' && (data.new_message.from_id == currentChatId || data.new_message.to_id == currentChatId)) {
-        const { new_message } = data;
-        setMessages((prevMessages) => [
-          ...prevMessages,
-          {
-            id: new_message.message_id,
-            from_id: new_message.from_id,
-            to_id: new_message.to_id,
-            text: new_message.text,
-            created_at: new_message.created_at,
-          },
-        ]);
+      if (data.event === 'new_message') {
+        if (data.new_message.from_id == currentChatId || data.new_message.to_id == currentChatId) {
+          const { new_message } = data;
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              id: new_message.message_id,
+              from_id: new_message.from_id,
+              to_id: new_message.to_id,
+              text: new_message.text,
+              created_at: new_message.created_at,
+            },
+          ]);
+        }
+
+        const existingChat = chats.chats.find(c => c.to_user.id === data.new_message.from_id);
+        console.log(existingChat);
+        if (!existingChat) {
+          try {
+            const user = await api.getUser(data.new_message.from_id);
+            setChats((prevChats) => ({
+              count: prevChats.count + 1,
+              chats: [{ to_user: user }, ...prevChats.chats],
+            }));
+          } catch (err) {
+            console.error('Failed to fetch user for new message', err);
+          }
+        }
       }
     };
 
