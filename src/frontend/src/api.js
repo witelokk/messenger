@@ -63,8 +63,16 @@ class APIClient {
         return await this.request('/users/', 'POST', data);
     }
 
+    async getUser(userId) {
+        return await this.request(`/users/${userId}`, 'GET', null, true);
+    }
+
+    async getUserByUsername(username) {
+        return await this.request(`/users/username/${username}`, 'GET', null, true);
+    }
+
     async deleteUser() {
-        return await this.request('/users/me', 'DELETE', null, true);
+        return await this.request(`/users/${localStorage.userId}`, 'DELETE', null, true);
     }
 
     async login(username, password) {

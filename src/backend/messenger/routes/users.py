@@ -1,9 +1,9 @@
 from fastapi import APIRouter, HTTPException, status
 
-from messenger.service.message_service import UserDoesNotExistError
 from messenger.service.user_service import (
     UserAlreadyExistsError,
     AnotherUserModificationError,
+    UserDoesNotExistError
 )
 from messenger.schema.user import CreateUserRequest, UserResponse
 from messenger.schema.error import Error

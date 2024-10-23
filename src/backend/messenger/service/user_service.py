@@ -7,7 +7,7 @@ class UserAlreadyExistsError(Exception):
     pass
 
 
-class UserDoesNotEsistError(Exception):
+class UserDoesNotExistError(Exception):
     pass
 
 
@@ -40,7 +40,7 @@ class UserService:
         user = await self._user_repository.get_by_id(id)
 
         if not user:
-            raise UserAlreadyExistsError()
+            raise UserDoesNotExistError()
 
         return UserResponse(id=user.id, username=user.username, active=user.active)
 
@@ -48,7 +48,7 @@ class UserService:
         user = await self._user_repository.get_by_username(username)
 
         if not user:
-            raise UserAlreadyExistsError()
+            raise UserDoesNotExistError()
 
         return UserResponse(id=user.id, username=user.username, active=user.active)
 

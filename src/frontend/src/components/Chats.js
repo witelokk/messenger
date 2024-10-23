@@ -115,7 +115,18 @@ function Chats({ onLogout, api }) {
   };
 
   const handleCreateChat = async () => {
-    // todo: implement
+    try {
+      const user = await api.getUserByUsername(newChatUsername);
+
+      setChats({
+        count: chats.count + 1,
+        chats: [...chats.chats, { to_user: user }]
+      });
+
+      setSelectedChatId(user.id);
+    } catch (e) {
+      setError(e.message);
+    }
   };
 
   return (
