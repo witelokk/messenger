@@ -6,6 +6,9 @@ from messenger.repo import SessionRepository, UserRepository
 from messenger.schema.session import CreateSessionRequest, Session, SessionResponse
 
 
+SESSION_TTL = timedelta(hours=1)
+
+
 class InvalidCredentialsError(Exception):
     pass
 
@@ -36,7 +39,7 @@ class AuthService:
         session = Session(
             token=token,
             user_id=user.id,
-            expires=datetime.now() + timedelta(seconds=1200),
+            expires=datetime.now() + SESSION_TTL,
         )
         await self._session_repository.add(session)
 

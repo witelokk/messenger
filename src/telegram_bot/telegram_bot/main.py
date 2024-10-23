@@ -9,7 +9,7 @@ from aiogram.filters import CommandStart, CommandObject
 from aiogram.types import Message
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
-from redis import Redis
+from redis.asyncio import Redis
 import asyncpg
 
 
@@ -21,18 +21,17 @@ form_router = Router()
 
 
 async def handle_key(message: Message, key: str) -> bool:
-    if not key.isnumeric():
-        return False
-
-    user_id = redis.get(f"tg_key:{key}")
+    user_id = await redis.get(f"tg_key:{key}")
 
     if not user_id:
         return False
 
+    print(user_id, message.from_user.id)
+
     await db.execute(
         "UPDATE users SET telegram_id = $2 WHERE id = $1;",
         int(user_id),
-        int(message.from_user.id),
+        message.from_user.id,
     )
     return True
 
@@ -47,7 +46,7 @@ async def command_start_handler(
 ) -> None:
     await state.set_state(Form.key)
 
-    success = await handle_key(message, command.args)
+    success = await handle_key(message, command.args.strip())
 
     if success:
         await state.clear()
@@ -69,7 +68,9 @@ async def command_start_handler(message: Message, state: FSMContext) -> None:
 async def process_key(message: Message, state: FSMContext) -> None:
     await state.update_data(name=message.text)
 
-    if await handle_key(message, message.text):
+    print("process_key")
+
+    if await handle_key(message, message.text.strip()):
         await state.clear()
         await message.answer("Your account is successfully connected!")
     else:

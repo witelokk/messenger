@@ -129,10 +129,21 @@ function Chats({ onLogout, api }) {
     }
   };
 
+  const handleConnectTelegram = async (e) => {
+    try {
+      const response = await api.createTgKey();
+      const url = `https://t.me/${process.env.REACT_APP_BOT_USERNAME}?start=${response.key}`;
+      window.open(url, '_blank').focus();
+    } catch (e) {
+      setError(e);
+    }
+  }
+
   return (
     <div className="home">
       {localStorage.username}
       <button onClick={onLogout}>Logout</button>
+      <a href='#' onClick={handleConnectTelegram}>Connect Telegram</a>
       <div className="chat-container" style={{ display: 'flex' }}>
         <div style={{ width: '30%', borderRight: '1px solid #ccc', padding: '10px' }}>
           <ChatList chats={chats.chats} onSelectChat={handleSelectChat} />

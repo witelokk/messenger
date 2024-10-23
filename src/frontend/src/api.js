@@ -41,9 +41,9 @@ class APIClient {
         }
 
         if (!response.ok) {
-            const text = await response.text();
-            console.log(response.status, text);
-            throw new ApiError(response.status, text || response.statusText);
+            const json = await response.json();
+            console.log(response.status, json);
+            throw new ApiError(response.status, typeof(json.detail) === "string"? json.detail: response.statusText);
         }
 
         return response.status !== 204 ? await response.json() : null;
@@ -103,6 +103,10 @@ class APIClient {
 
     async getChats() {
         return await this.request('/chats/', 'GET', null, true);
+    }
+
+    async createTgKey() {
+        return await this.request('/tg_key', 'POST', null, true);
     }
 };
 export default APIClient;

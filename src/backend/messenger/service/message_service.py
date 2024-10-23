@@ -53,7 +53,7 @@ class MessageService:
             user = await self._user_repository.get_by_id(user_id)
             await self._tg_bot.send_message(
                 chat_id=to_user.telegram_id,
-                text=f"New message from {user.username}",
+                text=f"New message from {user.username}:\n{message.text}",
             )
 
     async def get_messages(

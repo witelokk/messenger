@@ -5,6 +5,9 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from messenger.repo.redis_tg_key_repository import RedisTgKeyRepository
+from messenger.repo.tg_key_repository import TgKeyRepository
+from messenger.service.tg_key_service import TgKeyService
 from messenger.service.user_service import UserService
 from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
@@ -138,6 +141,22 @@ async def get_chat_service(
     chat_repository: chat_repository_dependency,
 ):
     return ChatService(chat_repository)
+
+
+async def get_tg_key_repository(redis: redis_dependency):
+    return RedisTgKeyRepository(redis)
+
+
+tg_key_repository_dependency = Annotated[
+    TgKeyRepository, Depends(get_tg_key_repository)
+]
+
+
+async def get_tg_key_service(tg_key_repository: tg_key_repository_dependency):
+    return TgKeyService(tg_key_repository)
+
+
+tg_key_serice_dependency = Annotated[TgKeyService, Depends(get_tg_key_service)]
 
 
 chat_service_dependency = Annotated[ChatService, Depends(get_chat_service)]
