@@ -10,6 +10,7 @@ function Register({ api }) {
     try {
       await api.createUser(username, password);
       await api.login(username, password);
+      window.location.reload();
     } catch (e) {
       setErrorMessage(e.message);
     }

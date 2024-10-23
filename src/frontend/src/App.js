@@ -6,7 +6,7 @@ import Home from './components/Chats';
 import APIClient from './api';
 
 function App() {
-  const api = new APIClient("http://" + process.env.REACT_APP_BACK_URL);
+  const api = new APIClient(process.env.REACT_APP_BACK_URL);
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);

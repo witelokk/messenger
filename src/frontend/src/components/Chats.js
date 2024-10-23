@@ -29,6 +29,7 @@ function Chats({ onLogout, api }) {
         const chats = await api.getChats();
         setChats(chats);
       } catch (err) {
+        console.log(err);
         setError('Failed to fetch chats');
       }
     };
@@ -45,6 +46,7 @@ function Chats({ onLogout, api }) {
           const response = await api.getMessagesTo(selectedChatId);
           setMessages(response.messages);
         } catch (err) {
+          console.log(err);
           setError('Failed to fetch messages');
         } finally {
           setLoading(false);
@@ -57,7 +59,7 @@ function Chats({ onLogout, api }) {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const ws = new WebSocket(`ws://${process.env.REACT_APP_BACK_URL}/websocket?token=${token}`);
+    const ws = new WebSocket(`${process.env.REACT_APP_BACK_URL}/websocket?token=${token}`);
 
     ws.onopen = () => {
       console.log('Connected to WebSocket');
