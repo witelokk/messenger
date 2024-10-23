@@ -1,8 +1,7 @@
 from datetime import datetime
 
-from aiogram import Bot
-
 from messenger.websocket_manager import WebSocketManager
+from messenger.celery_worker import send_notification
 from messenger.repo.user_repository import UserRepository
 from messenger.repo.message_repository import MessageRepository
 from messenger.schema.message import (
@@ -24,12 +23,10 @@ class MessageService:
         user_repository: UserRepository,
         message_repository: MessageRepository,
         websocket_manager: WebSocketManager,
-        tg_bot: Bot,
     ):
         self._user_repository = user_repository
         self._message_repository = message_repository
         self._websocket_manager = websocket_manager
-        self._tg_bot = tg_bot
 
     async def create_message(
         self, user_id: int, create_message_request: CreateMessageRequest
@@ -51,9 +48,9 @@ class MessageService:
 
         if not self._websocket_manager.is_connected(to_user.id) and to_user.telegram_id:
             user = await self._user_repository.get_by_id(user_id)
-            await self._tg_bot.send_message(
-                chat_id=to_user.telegram_id,
-                text=f"New message from {user.username}:\n{message.text}",
+            send_notification.delay(
+                to_user.model_dump(),
+                f"New message from {user.username}:\n{message.text}",
             )
 
     async def get_messages(

@@ -33,6 +33,23 @@ services:
     networks:
       - app-network
 
+  celery_workey:
+    container_name: celery_worker
+    build:
+      context: ./src/backend
+      dockerfile: Dockerfile
+    environment:
+      - POSTGRES_USERNAME=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - BOT_TOKEN=${BOT_TOKEN}
+    command: celery -A messenger.celery_worker worker --loglevel=info
+    networks:
+      - app-network
+
   telegram_bot:
     build:
       context: ./src/telegram_bot

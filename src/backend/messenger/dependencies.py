@@ -1,8 +1,5 @@
 from typing import Annotated
 
-from aiogram import Bot
-from aiogram.client.default import DefaultBotProperties
-from aiogram.enums import ParseMode
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from messenger.repo.redis_tg_key_repository import RedisTgKeyRepository
@@ -85,26 +82,12 @@ websocket_manager_dependency = Annotated[
 ]
 
 
-async def get_tg_bot():
-    bot = Bot(
-        token=settings.bot_token,
-        default=DefaultBotProperties(parse_mode=ParseMode.HTML),
-    )
-    return bot
-
-
-tg_bot_dependency = Annotated[Bot, Depends(get_tg_bot)]
-
-
 async def get_message_service(
     user_repository: user_repository_dependency,
     messages_repository: message_repository_dependency,
     websocket_manager: websocket_manager_dependency,
-    tg_bot: tg_bot_dependency,
 ):
-    return MessageService(
-        user_repository, messages_repository, websocket_manager, tg_bot
-    )
+    return MessageService(user_repository, messages_repository, websocket_manager)
 
 
 message_service_dependency = Annotated[MessageService, Depends(get_message_service)]

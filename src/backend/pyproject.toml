@@ -14,7 +14,8 @@ alembic = "^1.13.3"
 psycopg2-binary = "^2.9.10"
 redis = "^5.1.1"
 asyncpg = "^0.30.0"
-aiogram = "^3.13.1"
+celery = "^5.4.0"
+requests = "^2.32.3"
 
 
 [tool.poetry.group.dev.dependencies]
