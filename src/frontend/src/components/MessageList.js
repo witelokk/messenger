@@ -8,7 +8,7 @@ function MessageList({ chat, messages }) {
             <ul>
                 {messages.map((message) => (
                     <li key={message.id}>
-                        <strong>{message.from_user.id == localStorage.getItem('userId') ? 'You' : message.from_user.username}:</strong> {message.text} <br />
+                        <strong>{message.from_id == localStorage.getItem('userId') ? 'You' : chat.to_user.username}:</strong> {message.text} <br />
                         <small>{new Date(message.created_at).toLocaleString()}</small>
                     </li>
                 ))}

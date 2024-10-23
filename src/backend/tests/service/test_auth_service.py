@@ -4,7 +4,7 @@ from messenger.schema.session import CreateSessionRequest
 from messenger.service.auth_service import (
     UserAlreadyExistsError,
     InvalidCredentialsError,
-    _hash_password,
+    hash_password,
 )
 
 
@@ -17,7 +17,7 @@ async def test_create_user(auth_service, mock_user_repo):
     user = await mock_user_repo.get_by_username("testuser")
     assert user is not None
     assert user.username == "testuser"
-    assert user.password_hash == _hash_password("password123")
+    assert user.password_hash == hash_password("password123")
 
 
 @pytest.mark.asyncio

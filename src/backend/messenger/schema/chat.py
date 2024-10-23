@@ -1,17 +1,17 @@
 from pydantic import BaseModel
 
-from .user import UserResponse
-from .message import Message, MessageResponse
+from .user import User, UserResponse
+from .message import Message
 
 
 class Chat(BaseModel):
-    to_id: int
+    to_user: User
     last_message: Message
 
 
 class ChatResponse(BaseModel):
     to_user: UserResponse
-    last_message: MessageResponse
+    last_message: Message
 
 
 class ChatsResponse(BaseModel):

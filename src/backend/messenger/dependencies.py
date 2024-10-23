@@ -1,10 +1,11 @@
 from typing import Annotated
 
-from aiogram import Bot, Dispatcher
+from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
+from messenger.service.user_service import UserService
 from sqlalchemy.ext.asyncio import AsyncSession
 from redis.asyncio import Redis
 
@@ -106,6 +107,16 @@ async def get_message_service(
 message_service_dependency = Annotated[MessageService, Depends(get_message_service)]
 
 
+async def get_user_service(
+    user_repository: user_repository_dependency,
+    session_repository: session_repository_dependency,
+):
+    return UserService(user_repository, session_repository)
+
+
+user_service_dependency = Annotated[UserService, Depends(get_user_service)]
+
+
 async def get_auth_service(
     user_repository: user_repository_dependency,
     session_repository: session_repository_dependency,
@@ -125,9 +136,8 @@ chat_repository_dependency = Annotated[ChatRepository, Depends(get_chat_reposito
 
 async def get_chat_service(
     chat_repository: chat_repository_dependency,
-    user_repository: user_repository_dependency,
 ):
-    return ChatService(chat_repository, user_repository)
+    return ChatService(chat_repository)
 
 
 chat_service_dependency = Annotated[ChatService, Depends(get_chat_service)]

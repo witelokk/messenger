@@ -13,8 +13,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app.include_router(users.router, prefix="/users", tags=["auth"])
 app.include_router(sessions.router, prefix="/sessions", tags=["auth"])
+app.include_router(users.router, prefix="/users", tags=["users"])
 app.include_router(messages.router, prefix="/messages", tags=["messages"])
 app.include_router(chats.router, prefix="/chats", tags=["chats"])
 app.include_router(websocket.router, prefix="/websocket", tags=["websocket"])

@@ -18,14 +18,6 @@ class CreateMessageRequest(BaseModel):
     text: str
 
 
-class MessageResponse(BaseModel):
-    id: int
-    from_user: UserResponse
-    to_user: UserResponse
-    text: str
-    created_at: datetime
-
-
 class MessagesResponse(BaseModel):
     count: int
-    messages: list[MessageResponse]
+    messages: list[Message]

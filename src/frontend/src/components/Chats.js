@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import ChatList from './ChatList';
 import MessageList from './MessageList';
@@ -13,6 +13,9 @@ function Chats({ onLogout, api }) {
   const [newChatUsername, setNewChatUsername] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const currentChatIdRef = useRef();
+  currentChatIdRef.current = selectedChatId;
 
   useEffect(() => {
     if (chatId) {
@@ -65,14 +68,16 @@ function Chats({ onLogout, api }) {
       console.log(event.data);
       const data = JSON.parse(event.data);
 
-      if (data.event === 'new_message' && data.from_id !== selectedChatId) {
+      const currentChatId = currentChatIdRef.current;
+
+      if (data.event === 'new_message' && (data.new_message.from_id == currentChatId || data.new_message.to_id == currentChatId)) {
         const { new_message } = data;
         setMessages((prevMessages) => [
           ...prevMessages,
           {
             id: new_message.message_id,
-            from_user: { id: new_message.from_id },
-            to_user: { id: selectedChatId },
+            from_id: new_message.from_id,
+            to_id: new_message.to_id,
             text: new_message.text,
             created_at: new_message.created_at,
           },

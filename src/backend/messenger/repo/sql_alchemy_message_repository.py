@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import and_, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 from messenger.models import MessageModel
 from messenger.schema.message import Message
@@ -30,7 +30,10 @@ class SqlAlchemyMessageRepository:
     async def get_all(self, from_id: int, to_id: int) -> List[Message]:
         message_models = await self._db.scalars(
             select(MessageModel).where(
-                (MessageModel.from_id == from_id) & (MessageModel.to_id == to_id)
+                or_(
+                    and_(MessageModel.from_id == from_id, MessageModel.to_id == to_id),
+                    and_(MessageModel.from_id == to_id, MessageModel.to_id == from_id),
+                )
             )
         )
 

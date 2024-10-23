@@ -23,6 +23,7 @@ class WebSocketManager:
                 {
                     "event": "new_message",
                     "new_message": {
+                        "to_id": message.to_id,
                         "from_id": message.from_id,
                         "text": message.text,
                         "created_at": message.created_at.timestamp(),

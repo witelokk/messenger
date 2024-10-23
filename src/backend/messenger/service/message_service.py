@@ -8,7 +8,6 @@ from messenger.repo.message_repository import MessageRepository
 from messenger.schema.message import (
     Message,
     CreateMessageRequest,
-    MessageResponse,
     MessagesResponse,
     UserResponse,
 )
@@ -63,30 +62,4 @@ class MessageService:
         to_id: int,
     ) -> MessagesResponse:
         messages = await self._message_repository.get_all(user_id, to_id)
-        message_schemas = [
-            MessageResponse(
-                id=message.id,
-                from_user=UserResponse(
-                    id=message.from_id,
-                    username=(
-                        await self._user_repository.get_by_id(message.from_id)
-                    ).username,
-                    active=(
-                        await self._user_repository.get_by_id(message.from_id)
-                    ).active,
-                ),
-                to_user=UserResponse(
-                    id=message.to_id,
-                    username=(
-                        await self._user_repository.get_by_id(message.from_id)
-                    ).username,
-                    active=(
-                        await self._user_repository.get_by_id(message.from_id)
-                    ).active,
-                ),
-                text=message.text,
-                created_at=message.created_at,
-            )
-            for message in messages
-        ]
-        return MessagesResponse(count=len(message_schemas), messages=message_schemas)
+        return MessagesResponse(count=len(messages), messages=messages)
